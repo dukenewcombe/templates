@@ -12,4 +12,32 @@ category: light
 type: Light
 standard: au
 ---
-Soldering is required for the TX RX 3.3 and GND pads otherwise it's a straight forward flash onto an ESP8285 chip.
+Flashing this unit does require some soldering for the TX RX 3.3 and GND pads; from there it is a normal serial flash onto an ESP8285 chip remembering to have GPIO0 grounded on start up.
+
+Setup in Home Assistant lights.yaml
+```yaml
+- platform: mqtt
+  name: "Deta Downlight"
+  state_topic: "topic/stat/RESULT"
+  state_value_template: "{{ value_json.POWER }}"
+  command_topic: "topic/cmnd/POWER"
+  payload_on: "ON"
+  payload_off: "OFF"  
+    
+  availability_topic: "topic/tele/LWT"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  
+  brightness_scale: 100
+  brightness_state_topic: "topic/tele/STATE"
+  brightness_command_topic: "topic/cmnd/DIMMER"
+  brightness_value_template: "{{ value_json.Dimmer }}"
+  
+  color_temp_command_topic: "topic/cmnd/CT"
+  color_temp_state_topic: "topic/tele/STATE"
+  color_temp_value_template: "{{ value_json.CT }}"
+
+  rgb_command_topic: "topic/cmnd/COLOR"
+  rgb_state_topic: "topic/tele/STATE"
+  rgb_value_template: "{{ value_json.Color }}"
+  ```
